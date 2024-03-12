@@ -7,13 +7,22 @@ import { environment } from '@environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  API_URL = environment.API_URL;
-  API_LOGIN = '/api/v1/auth/login';
+  API_URL = `${environment.API_URL}/api/v1/auth`;
+  API_LOGIN = '/login';
+  API_REGISTER = '/register';
 
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string) {
     return this.http.post(`${this.API_URL}${this.API_LOGIN}`, {
+      email,
+      password,
+    });
+  }
+
+  register(name: string, email: string, password: string) {
+    return this.http.post(`${this.API_URL}${this.API_REGISTER}`, {
+      name,
       email,
       password,
     });
