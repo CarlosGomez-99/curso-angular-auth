@@ -10,6 +10,7 @@ export class AuthService {
   API_URL = `${environment.API_URL}/api/v1/auth`;
   API_LOGIN = '/login';
   API_REGISTER = '/register';
+  API_IS_AVAILABLE_EMAIL = '/is-available';
 
   constructor(private http: HttpClient) {}
 
@@ -26,5 +27,14 @@ export class AuthService {
       email,
       password,
     });
+  }
+
+  isAvilableEmail(email: string) {
+    return this.http.post<{ isAvailable: boolean }>(
+      `${this.API_URL}${this.API_IS_AVAILABLE_EMAIL}`,
+      {
+        email,
+      }
+    );
   }
 }

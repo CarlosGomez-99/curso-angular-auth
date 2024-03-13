@@ -12,6 +12,10 @@ import { AuthService } from '@services/auth.service';
   templateUrl: './register-form.component.html',
 })
 export class RegisterFormComponent {
+  formUser = this.formBuilder.group({
+    email: ['', [Validators.email, Validators.required]],
+  });
+
   form = this.formBuilder.nonNullable.group(
     {
       name: ['', [Validators.required]],
@@ -26,9 +30,11 @@ export class RegisterFormComponent {
     }
   );
   status: RequestStatus = 'init';
+  statusUser: RequestStatus = 'init';
   faEye = faEye;
   faEyeSlash = faEyeSlash;
   showPassword = false;
+  showRegister = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -52,6 +58,35 @@ export class RegisterFormComponent {
       });
     } else {
       this.form.markAllAsTouched();
+    }
+  }
+
+  validateUser() {
+    if (this.formUser.valid) {
+      this.statusUser = 'loading';
+      const { email } = this.formUser.getRawValue();
+      if (email) {
+        this.authService.isAvilableEmail(email).subscribe({
+          next: (rta) => {
+            this.statusUser = 'success';
+            if (rta.isAvailable === true) {
+              this.form.controls.email.setValue(email);
+              this.showRegister = true;
+            } else {
+              alert('El email ya se encuentra registrado');
+              this.router.navigate(['/login'], {
+                queryParams: { email },
+              });
+            }
+          },
+          error: (response) => {
+            this.statusUser = 'error';
+            console.error(response);
+          },
+        });
+      }
+    } else {
+      this.formUser.markAllAsTouched();
     }
   }
 }
