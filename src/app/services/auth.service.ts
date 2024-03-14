@@ -12,6 +12,8 @@ export class AuthService {
   API_LOGIN = '/login';
   API_REGISTER = '/register';
   API_IS_AVAILABLE_EMAIL = '/is-available';
+  API_RECOVERY = '/recovery';
+  API_CHANGE_PASSWORD = '/change-password';
 
   constructor(private http: HttpClient) {}
 
@@ -43,5 +45,18 @@ export class AuthService {
         email,
       }
     );
+  }
+
+  recovery(email: string) {
+    return this.http.post(`${this.API_URL}${this.API_RECOVERY}`, {
+      email,
+    });
+  }
+
+  changePassword(token: string, password: string) {
+    return this.http.post(`${this.API_URL}${this.API_CHANGE_PASSWORD}`, {
+      token: token,
+      newPassword: password,
+    });
   }
 }
