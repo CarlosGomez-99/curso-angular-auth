@@ -20,6 +20,10 @@ export class UsersTableComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getUsers();
+  }
+
+  getUsers(): void {
     this.usersService.getUsers().subscribe((users: User[]) => {
       this.dataSource.init(users);
     });
