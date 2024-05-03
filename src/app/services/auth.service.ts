@@ -19,6 +19,7 @@ export class AuthService {
   API_RECOVERY = '/recovery';
   API_CHANGE_PASSWORD = '/change-password';
   API_PROFILE = '/profile';
+  API_REFRESH_TOKEN = '/refresh-token';
 
   user$ = new BehaviorSubject<User | null>(null);
 
@@ -29,6 +30,19 @@ export class AuthService {
       .post<ResponseLogin>(`${this.API_URL}${this.API_LOGIN}`, {
         email,
         password,
+      })
+      .pipe(
+        tap((response) => {
+          this.tokenService.saveToken(response.access_token);
+          this.tokenService.saveRefreshToken(response.refresh_token);
+        })
+      );
+  }
+
+  refreshToken(refreshToken: string) {
+    return this.http
+      .post<ResponseLogin>(`${this.API_URL}${this.API_REFRESH_TOKEN}`, {
+        refreshToken,
       })
       .pipe(
         tap((response) => {
